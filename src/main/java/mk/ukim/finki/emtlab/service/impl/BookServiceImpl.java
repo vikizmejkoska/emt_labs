@@ -2,6 +2,7 @@ package mk.ukim.finki.emtlab.service.impl;
 
 import mk.ukim.finki.emtlab.model.Book;
 import mk.ukim.finki.emtlab.model.dto.BookDto;
+import mk.ukim.finki.emtlab.model.enumerations.Category;
 import mk.ukim.finki.emtlab.repository.BookRepository;
 import mk.ukim.finki.emtlab.service.AuthorService;
 import mk.ukim.finki.emtlab.service.BookService;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -74,5 +76,16 @@ public class BookServiceImpl implements BookService {
                 bookRepository.save(book);
             }
         });
+    }
+
+    @Override
+    public List<Book> searchBooks(String title, String author, Category category) {
+        return bookRepository.findAll()
+                .stream()
+                .filter(book -> !book.isDeleted())  // Ensuring soft-deleted books are ignored
+                .filter(book -> title == null || book.getName().toLowerCase().contains(title.toLowerCase()))
+                .filter(book -> author == null || book.getAuthor().getName().toLowerCase().contains(author.toLowerCase()))
+                .filter(book -> category == null || book.getCategory() == category)
+                .collect(Collectors.toList());
     }
 }

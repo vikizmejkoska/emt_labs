@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import mk.ukim.finki.emtlab.model.enumerations.Category;
 
 import java.util.List;
 
@@ -67,6 +68,14 @@ public class BookController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/search")
+    @Operation(summary = "Filter", description = "Filter by title, author and category")
+    public List<Book> searchBooks( @RequestParam(required = false) String title,
+                                   @RequestParam(required = false) String author,
+                                   @RequestParam(required = false) Category category) {
+        return bookService.searchBooks(title, author, category);
     }
 
 }
