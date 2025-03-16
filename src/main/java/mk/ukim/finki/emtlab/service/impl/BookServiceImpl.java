@@ -20,12 +20,12 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> findAll() {
-        return bookRepository.findAll();
+        return bookRepository.findAllActive();
     }
 
     @Override
     public Optional<Book> findById(Long id) {
-        return bookRepository.findById(id);
+        return bookRepository.findByIdActive(id);
     }
 
     @Override
@@ -60,7 +60,10 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void delete(Long id) {
-      bookRepository.deleteById(id);
+        bookRepository.findById(id).ifPresent(book -> {
+            book.setDeleted(true);
+            bookRepository.save(book);
+        });
     }
 
     @Override

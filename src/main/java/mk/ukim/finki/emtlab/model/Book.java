@@ -26,14 +26,16 @@ public class Book {
     private Author author;
 
     private Integer availableCopies;
+    private boolean deleted = false; // Soft delete flag
 
     public Book(String name, Category category, Author author, Integer availableCopies) {
         this.name = name;
         this.category = category;
         this.author = author;
         this.availableCopies = availableCopies;
+        this.deleted = false; // Default to false (not deleted)
     }
 
 
-    }
+}
 
