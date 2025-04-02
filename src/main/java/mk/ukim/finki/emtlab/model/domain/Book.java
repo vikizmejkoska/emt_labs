@@ -1,5 +1,6 @@
-package mk.ukim.finki.emtlab.model;
+package mk.ukim.finki.emtlab.model.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import mk.ukim.finki.emtlab.model.enumerations.Category;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -27,6 +30,11 @@ public class Book {
 
     private Integer availableCopies;
     private boolean deleted = false; // Soft delete flag
+
+    @ManyToOne
+    @JoinColumn(name = "wishlist_id")
+    private Wishlist wishlist;
+
 
     public Book(String name, Category category, Author author, Integer availableCopies) {
         this.name = name;

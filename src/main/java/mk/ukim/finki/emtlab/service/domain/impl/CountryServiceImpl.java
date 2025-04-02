@@ -1,9 +1,9 @@
-package mk.ukim.finki.emtlab.service.impl;
+package mk.ukim.finki.emtlab.service.domain.impl;
 
-import mk.ukim.finki.emtlab.model.Country;
-import mk.ukim.finki.emtlab.model.dto.CountryDto;
+import mk.ukim.finki.emtlab.model.domain.Country;
+import mk.ukim.finki.emtlab.model.domain.Country;
 import mk.ukim.finki.emtlab.repository.CountryRepository;
-import mk.ukim.finki.emtlab.service.CountryService;
+import mk.ukim.finki.emtlab.service.domain.CountryService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,15 +26,15 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
-    public Optional<Country> save(CountryDto countryDto) {
-        Country country = new Country();
-        country.setName(countryDto.getName());
-        country.setContinent(countryDto.getContinent());
+    public Optional<Country> save(Country country) {
+        country = new Country();
+        country.setName(country.getName());
+        country.setContinent(country.getContinent());
         return Optional.of(countryRepository.save(country));
     }
 
     @Override
-    public Optional<Country> update(Long id, CountryDto country) {
+    public Optional<Country> update(Long id, Country country) {
         return countryRepository.findById(id).map(existingCountry->{
             if(country.getName() != null){
                 existingCountry.setName(country.getName());

@@ -1,11 +1,11 @@
-package mk.ukim.finki.emtlab.service.impl;
+package mk.ukim.finki.emtlab.service.domain.impl;
 
-import mk.ukim.finki.emtlab.model.Book;
-import mk.ukim.finki.emtlab.model.dto.BookDto;
+import mk.ukim.finki.emtlab.model.domain.Book;
+import mk.ukim.finki.emtlab.model.domain.Book;
 import mk.ukim.finki.emtlab.model.enumerations.Category;
 import mk.ukim.finki.emtlab.repository.BookRepository;
-import mk.ukim.finki.emtlab.service.AuthorService;
-import mk.ukim.finki.emtlab.service.BookService;
+import mk.ukim.finki.emtlab.service.domain.AuthorService;
+import mk.ukim.finki.emtlab.service.domain.BookService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,18 +31,18 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Optional<Book> save(BookDto book) {
-        if (book.getAuthor() != null && authorService.findById(book.getAuthor()).isPresent()){
+    public Optional<Book> save(Book book) {
+        if (book.getAuthor() != null && authorService.findById(book.getAuthor().getId()).isPresent()){
             return Optional.of(
                     bookRepository.save(new Book(book.getName(),book.getCategory(),
-                            authorService.findById(book.getAuthor()).get(),
+                            authorService.findById(book.getAuthor().getId()).get(),
                             book.getAvailableCopies() )));
         }
         return Optional.empty();
     }
 
     @Override
-    public Optional<Book> update(Long id, BookDto book) {
+    public Optional<Book> update(Long id, Book book) {
         return bookRepository.findById(id).map( existingBook -> {
         if (book.getName()!=null){
             existingBook.setName(book.getName());
@@ -50,8 +50,8 @@ public class BookServiceImpl implements BookService {
         if (book.getCategory()!=null){
             existingBook.setCategory(book.getCategory());
         }
-        if (book.getAuthor()!=null && authorService.findById(book.getAuthor()).isPresent() ){
-            existingBook.setAuthor(authorService.findById(book.getAuthor()).get());
+        if (book.getAuthor()!=null && authorService.findById(book.getAuthor().getId()).isPresent() ){
+            existingBook.setAuthor(authorService.findById(book.getAuthor().getId()).get());
         }
         if (book.getAvailableCopies()!=null){
             existingBook.setAvailableCopies(book.getAvailableCopies());
@@ -68,15 +68,15 @@ public class BookServiceImpl implements BookService {
         });
     }
 
-    @Override
-    public void markAsRented(Long id) {
-        bookRepository.findById(id).ifPresent(book -> {
-            if (book.getAvailableCopies() > 0) {
-                book.setAvailableCopies(book.getAvailableCopies() - 1);
-                bookRepository.save(book);
-            }
-        });
-    }
+//    @Override
+//    public void markAsRented(Long id) {
+//        bookRepository.findById(id).ifPresent(book -> {
+//            if (book.getAvailableCopies() > 0) {
+//                book.setAvailableCopies(book.getAvailableCopies() - 1);
+//                bookRepository.save(book);
+//            }
+//        });
+//    }
 
     @Override
     public List<Book> searchBooks(String title, String author, Category category) {

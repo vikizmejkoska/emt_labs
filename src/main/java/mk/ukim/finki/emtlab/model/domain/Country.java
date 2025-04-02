@@ -1,4 +1,4 @@
-package mk.ukim.finki.emtlab.model;
+package mk.ukim.finki.emtlab.model.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,11 +1,11 @@
-package mk.ukim.finki.emtlab.service.impl;
+package mk.ukim.finki.emtlab.service.domain.impl;
 
-import mk.ukim.finki.emtlab.model.Author;
-import mk.ukim.finki.emtlab.model.Country;
-import mk.ukim.finki.emtlab.model.dto.AuthorDto;
+import mk.ukim.finki.emtlab.model.domain.Author;
+import mk.ukim.finki.emtlab.model.domain.Country;
+import mk.ukim.finki.emtlab.model.domain.Author;
 import mk.ukim.finki.emtlab.repository.AuthorRepository;
-import mk.ukim.finki.emtlab.service.AuthorService;
-import mk.ukim.finki.emtlab.service.CountryService;
+import mk.ukim.finki.emtlab.service.domain.AuthorService;
+import mk.ukim.finki.emtlab.service.domain.CountryService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,19 +29,19 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Optional<Author> save(AuthorDto authorDto) {
-        Author author = new Author();
-        author.setName(authorDto.getName());
-        author.setSurname(authorDto.getSurname());
+    public Optional<Author> save(Author author) {
+        author = new Author();
+        author.setName(author.getName());
+        author.setSurname(author.getSurname());
 
-        if (authorDto.getCountry() != null && countryService.findById(authorDto.getCountry().getId()).isPresent()) {
-            author.setCountry(authorDto.getCountry());
+        if (author.getCountry() != null && countryService.findById(author.getCountry().getId()).isPresent()) {
+            author.setCountry(author.getCountry());
         }
         return Optional.of(authorRepository.save(author));
     }
 
     @Override
-    public Optional<Author> update(Long id, AuthorDto author) {
+    public Optional<Author> update(Long id, Author author) {
         return authorRepository.findById(id).map(existingAuthor -> {
             if(author.getName() != null){
                 existingAuthor.setName(author.getName());
