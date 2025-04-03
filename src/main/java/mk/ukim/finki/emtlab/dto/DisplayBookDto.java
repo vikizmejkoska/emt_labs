@@ -4,6 +4,7 @@ import mk.ukim.finki.emtlab.model.domain.Author;
 import mk.ukim.finki.emtlab.model.domain.Book;
 import mk.ukim.finki.emtlab.model.enumerations.Category;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,7 +12,8 @@ public record DisplayBookDto(Long Id,
                              String name,
                              Category category,
                              Long author,
-                             Integer availableCopies) {
+                             Integer availableCopies,
+                             LocalDate publishedDate) {
 
     public static DisplayBookDto from(Book book) {
         return new DisplayBookDto(
@@ -19,7 +21,8 @@ public record DisplayBookDto(Long Id,
                 book.getName(),
                 book.getCategory(),
                 book.getAuthor().getId(),
-                book.getAvailableCopies()
+                book.getAvailableCopies(),
+                book.getPublishedDate()
         );
     }
 
@@ -28,6 +31,6 @@ public record DisplayBookDto(Long Id,
     }
 
     public Book toBook(Author author) {
-        return new Book(name, category, author, availableCopies);
+        return new Book(name, category, author, availableCopies, publishedDate);
     }
 }

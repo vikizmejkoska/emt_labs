@@ -13,5 +13,6 @@ public interface BookApplicationService {
     Optional<DisplayBookDto> save(CreateBookDto book);
     Optional<DisplayBookDto> update(Long id, CreateBookDto book);
     void delete(Long id);
+    List<DisplayBookDto> findLatestBooks();
 
 }

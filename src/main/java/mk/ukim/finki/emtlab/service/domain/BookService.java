@@ -1,5 +1,6 @@
 package mk.ukim.finki.emtlab.service.domain;
 
+import mk.ukim.finki.emtlab.dto.DisplayBookDto;
 import mk.ukim.finki.emtlab.model.domain.Book;
 import mk.ukim.finki.emtlab.model.enumerations.Category;
 
@@ -14,4 +15,5 @@ public interface BookService {
     void delete(Long id);
   //  void markAsRented(Long id);
     List<Book> searchBooks(String title, String author, Category category);
+    List<Book> findLatestBooks();
 }

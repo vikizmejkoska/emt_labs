@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -35,13 +36,15 @@ public class Book {
     @JoinColumn(name = "wishlist_id")
     private Wishlist wishlist;
 
+    private LocalDate publishedDate;
 
-    public Book(String name, Category category, Author author, Integer availableCopies) {
+    public Book(String name, Category category, Author author, Integer availableCopies,LocalDate publishedDate) {
         this.name = name;
         this.category = category;
         this.author = author;
         this.availableCopies = availableCopies;
         this.deleted = false; // Default to false (not deleted)
+        this.publishedDate = LocalDate.now();;
     }
 
 

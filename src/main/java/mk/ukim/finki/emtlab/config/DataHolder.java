@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import jakarta.annotation.PostConstruct;
 
+import java.time.LocalDate;
 
 
 @Component
@@ -40,8 +41,8 @@ public class DataHolder {
         Author author2 = new Author("Leo", "Tolstoy", country2);
         authorRepository.save(author2);
 
-        bookRepository.save(new Book("Pride and Prejudice", Category.DRAMA, author1, 5));
-        bookRepository.save(new Book("Anna Karenina", Category.NOVEL, author2, 10));
+        bookRepository.save(new Book("Pride and Prejudice", Category.DRAMA, author1, 5, LocalDate.now()));
+        bookRepository.save(new Book("Anna Karenina", Category.NOVEL, author2, 10,LocalDate.now()));
 
         userRepository.save(new User(
                 "user",

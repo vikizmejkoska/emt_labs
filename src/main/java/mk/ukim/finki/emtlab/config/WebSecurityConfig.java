@@ -50,6 +50,7 @@ public class WebSecurityConfig {
                         corsConfigurationSource()))
                 .authorizeHttpRequests(requests -> requests.requestMatchers(
                         "/api/books",
+                                "/api/books/latest",
                         "/api/authors",
                         "/api/countries",
                         "api/user/login",

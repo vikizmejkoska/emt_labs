@@ -65,8 +65,10 @@ public class BookApplicationServiceImpl implements BookApplicationService {
     public void delete(Long id) {
         bookService.delete(id);
     }
-
-
+    @Override
+    public List<DisplayBookDto> findLatestBooks() {
+        return bookService.findLatestBooks().stream().map(DisplayBookDto::from).toList();
+    }
 
 }
 

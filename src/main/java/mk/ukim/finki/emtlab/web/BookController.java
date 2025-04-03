@@ -59,6 +59,11 @@ public class BookController {
         }
         return ResponseEntity.notFound().build();
     }
+    @GetMapping("/latest")
+    @Operation(summary = "Get latest books", description = "Retrieve the 10 most recently published books")
+    public List<DisplayBookDto> findLatestBooks() {
+        return bookService.findLatestBooks();
+    }
 
 //    @PostMapping("/markAsRented/{id}")
 //    @Operation(summary = "Rent a book", description = "Decrease available copies when a book is rented")

@@ -7,6 +7,7 @@ import mk.ukim.finki.emtlab.repository.BookRepository;
 import mk.ukim.finki.emtlab.service.domain.AuthorService;
 import mk.ukim.finki.emtlab.service.domain.BookService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class BookServiceImpl implements BookService {
             return Optional.of(
                     bookRepository.save(new Book(book.getName(),book.getCategory(),
                             authorService.findById(book.getAuthor().getId()).get(),
-                            book.getAvailableCopies() )));
+                            book.getAvailableCopies(),book.getPublishedDate() )));
         }
         return Optional.empty();
     }
@@ -87,5 +88,10 @@ public class BookServiceImpl implements BookService {
                 .filter(book -> author == null || book.getAuthor().getName().toLowerCase().contains(author.toLowerCase()))
                 .filter(book -> category == null || book.getCategory() == category)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Book> findLatestBooks() {
+        return bookRepository.findTop10ByOrderByPublishedDateDesc(PageRequest.of(0, 10));
     }
 }
