@@ -6,11 +6,13 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 
 
 @SpringBootApplication
 @EntityScan
+@EnableScheduling
 public class EmtLabApplication {
 
     public static void main(String[] args) {

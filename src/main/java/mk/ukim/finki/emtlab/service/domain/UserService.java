@@ -4,11 +4,11 @@ import mk.ukim.finki.emtlab.model.domain.User;
 import mk.ukim.finki.emtlab.model.enumerations.Role;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import java.util.Optional;
+
 public interface UserService extends UserDetailsService {
 
-    User register(String username, String password, String repeatPassword, String name, String surname, Role role);
-
+    Optional<User> save(String username, String password, String repeatPassword, String name, String surname, Role userRole);
     User login(String username, String password);
-
-    User findByUsername(String username);
+    Optional<User> findByUsername(String username);
 }

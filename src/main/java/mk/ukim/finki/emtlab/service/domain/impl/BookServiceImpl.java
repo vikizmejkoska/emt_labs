@@ -1,9 +1,10 @@
 package mk.ukim.finki.emtlab.service.domain.impl;
 
 import mk.ukim.finki.emtlab.model.domain.Book;
-import mk.ukim.finki.emtlab.model.domain.Book;
 import mk.ukim.finki.emtlab.model.enumerations.Category;
+import mk.ukim.finki.emtlab.model.views.BooksPerAuthorView;
 import mk.ukim.finki.emtlab.repository.BookRepository;
+import mk.ukim.finki.emtlab.repository.BooksPerAuthorViewRepository;
 import mk.ukim.finki.emtlab.service.domain.AuthorService;
 import mk.ukim.finki.emtlab.service.domain.BookService;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final AuthorService authorService;
+    private final BooksPerAuthorViewRepository booksPerAuthorViewRepository;
 
 
     @Override
@@ -93,5 +95,15 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> findLatestBooks() {
         return bookRepository.findTop10ByOrderByPublishedDateDesc(PageRequest.of(0, 10));
+    }
+
+    @Override
+    public void refreshMaterializedView() {
+        booksPerAuthorViewRepository.refreshMaterializedView();
+    }
+
+    @Override
+    public List<BooksPerAuthorView> findBooksPerAuthor() {
+        return booksPerAuthorViewRepository.findAll();
     }
 }

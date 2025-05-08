@@ -4,6 +4,7 @@ import mk.ukim.finki.emtlab.dto.CreateBookDto;
 import mk.ukim.finki.emtlab.dto.DisplayBookDto;
 import mk.ukim.finki.emtlab.model.domain.Author;
 import mk.ukim.finki.emtlab.model.enumerations.Category;
+import mk.ukim.finki.emtlab.model.views.BooksPerAuthorView;
 import mk.ukim.finki.emtlab.service.application.BookApplicationService;
 import mk.ukim.finki.emtlab.service.domain.AuthorService;
 import mk.ukim.finki.emtlab.service.domain.BookService;
@@ -69,6 +70,9 @@ public class BookApplicationServiceImpl implements BookApplicationService {
     public List<DisplayBookDto> findLatestBooks() {
         return bookService.findLatestBooks().stream().map(DisplayBookDto::from).toList();
     }
-
+    @Override
+    public List<BooksPerAuthorView> findBooksPerAuthor() {
+        return bookService.findBooksPerAuthor();
+    }
 }
 

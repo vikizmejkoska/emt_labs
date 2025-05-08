@@ -1,5 +1,6 @@
 package mk.ukim.finki.emtlab.config;
 
+import  mk.ukim.finki.emtlab.config.security.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -8,13 +9,9 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -27,9 +24,11 @@ import java.util.List;
 public class WebSecurityConfig {
 
     private final CustomUsernamePasswordAuthenticationProvider authenticationProvider;
+    private final JwtFilter jwtFilter;
 
-    public WebSecurityConfig(CustomUsernamePasswordAuthenticationProvider authenticationProvider) {
+    public WebSecurityConfig(CustomUsernamePasswordAuthenticationProvider authenticationProvider, JwtFilter jwtFilter) {
         this.authenticationProvider = authenticationProvider;
+        this.jwtFilter = jwtFilter;
     }
 
     @Bean
@@ -45,42 +44,31 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(
-                        corsConfigurationSource()))
-                .authorizeHttpRequests(requests -> requests.requestMatchers(
-                        "/api/books",
-                                "/api/books/latest",
-                        "/api/authors",
-                        "/api/countries",
-                        "api/user/login",
-                        "api/user/register",
-                        "/api/wishlist"
-                ).permitAll()
-                        // Librarian-only endpoints
-                        .requestMatchers(
-                                "/api/books/**"
-                        ).hasRole("LIBRARIAN")
-
-                        // All other requests should be authenticated
-                        .anyRequest().authenticated())
-                .formLogin((form) -> form.loginProcessingUrl(
-                                "/api/user/login")
-                        .permitAll()
-                        .failureUrl("/api/user/login?error=BadCredentials")
-                        .defaultSuccessUrl(
-                                "/swagger-ui/index.html",
-                                true
-                        ))
-                .logout((logout) -> logout.logoutUrl("/api/user/logout")
-                        .clearAuthentication(true)
-                        .invalidateHttpSession(
-                                true)
-                        .deleteCookies("JSESSIONID")
-                        .logoutSuccessUrl("/api/user/login"))
-                .exceptionHandling((ex) -> ex.accessDeniedPage(
-                        "/access_denied"));
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(corsCustomizer ->
+                        corsCustomizer.configurationSource(corsConfigurationSource())
+                )
+                .authorizeHttpRequests(authorizeHttpRequestsCustomizer ->
+                                authorizeHttpRequestsCustomizer
+                                        .requestMatchers(
+                                                "/swagger-ui/**",
+                                                "/v3/api-docs/**",
+                                                "/api/user/register",
+                                                "/api/user/login"
+                                        )
+                                        .permitAll()
+//                                .requestMatchers("/api/book/**").hasRole("LIBRARIAN")
+                                        .anyRequest()
+                                        .authenticated()
+                )
+                .sessionManagement(sessionManagementConfigurer ->
+                        sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
+
     }
 
     @Bean

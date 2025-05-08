@@ -3,6 +3,7 @@ package mk.ukim.finki.emtlab.service.application;
 import mk.ukim.finki.emtlab.dto.CreateBookDto;
 import mk.ukim.finki.emtlab.dto.DisplayBookDto;
 import mk.ukim.finki.emtlab.model.enumerations.Category;
+import mk.ukim.finki.emtlab.model.views.BooksPerAuthorView;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,5 +15,5 @@ public interface BookApplicationService {
     Optional<DisplayBookDto> update(Long id, CreateBookDto book);
     void delete(Long id);
     List<DisplayBookDto> findLatestBooks();
-
+    List<BooksPerAuthorView> findBooksPerAuthor();
 }

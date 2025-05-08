@@ -2,12 +2,15 @@ package mk.ukim.finki.emtlab.web;
 
 import mk.ukim.finki.emtlab.dto.CreateAuthorDto;
 import mk.ukim.finki.emtlab.dto.DisplayAuthorDto;
+import mk.ukim.finki.emtlab.model.projections.AuthorProjection;
+import mk.ukim.finki.emtlab.model.views.AuthorsPerCountryView;
 import mk.ukim.finki.emtlab.service.application.AuthorApplicationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -21,10 +24,11 @@ public class AuthorController {
         this.authorApplicationService = authorApplicationService;
     }
 
-    @GetMapping
-    @Operation(summary = "Get all authors", description = "Retrieve a list of all authors")
-    public List<DisplayAuthorDto> findAll(){
-        return this.authorApplicationService.findAll();
+
+    @GetMapping()
+    @Operation(summary = "Get all authors", description = "Retrieves a list of all available authors")
+    public ResponseEntity<List<DisplayAuthorDto>> findAll() {
+        return ResponseEntity.ok(authorApplicationService.findAll());
     }
 
     @GetMapping("/{id}")
@@ -38,9 +42,12 @@ public class AuthorController {
     @PostMapping("/add")
     @Operation(summary = "Add a new author", description = "Create and store a new author")
     public ResponseEntity<DisplayAuthorDto> save(@RequestBody CreateAuthorDto createAuthorDto) {
-        return this.authorApplicationService.save(createAuthorDto)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+//        return this.authorApplicationService.save(createAuthorDto)
+//                .map(ResponseEntity::ok)
+//                .orElseGet(() -> ResponseEntity.notFound().build());
+
+        Optional<DisplayAuthorDto> displayAuthorDtoOptional = authorApplicationService.save(createAuthorDto);
+        return displayAuthorDtoOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     @PutMapping("/edit/{id}")
@@ -56,9 +63,19 @@ public class AuthorController {
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         if (authorApplicationService.findById(id).isPresent()) {
             authorApplicationService.delete(id);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/by-country")
+    public ResponseEntity<List<AuthorsPerCountryView>> findAuthorsPerCountry() {
+        return ResponseEntity.ok(authorApplicationService.findAuthorsPerCountry());
+    }
+
+    @GetMapping("/names")
+    public ResponseEntity<List<AuthorProjection>> findAllByNameAndSurname() {
+        return ResponseEntity.ok(authorApplicationService.findAllByNameAndSurname());
     }
 }

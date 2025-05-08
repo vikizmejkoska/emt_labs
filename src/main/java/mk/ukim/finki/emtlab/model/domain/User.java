@@ -21,28 +21,21 @@ import java.util.List;
 public class User implements UserDetails {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String username;
 
-    @JsonIgnore
     private String password;
 
     private String name;
 
     private String surname;
 
-    private boolean isAccountNonExpired = true;
-    private boolean isAccountNonLocked = true;
-    private boolean isCredentialsNonExpired = true;
-    private boolean isEnabled = true;
-
-    @Enumerated(value = EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private Role role;
 
-    // default:
-    // to-one -> FetchType.EAGER
-    // to-many -> FetchType.LAZY
-
-    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     private Wishlist wishlist;
 
 
@@ -54,41 +47,84 @@ public class User implements UserDetails {
         this.role = role;
     }
 
-    public User(String username, String password, String name, String surname) {
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.surname = surname;
-        this.role = Role.ROLE_USER;
+    public Long getId() {
+        return id;
     }
 
-    public User(UserDetails userDetails) {
-        this.username = userDetails.getUsername();
-        this.password = userDetails.getPassword();
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public Wishlist getWishlist() {
+        return wishlist;
+    }
+
+    public void setWishlist(Wishlist wishlist) {
+        this.wishlist = wishlist;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList((GrantedAuthority) role);
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return isAccountNonExpired;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return isAccountNonLocked;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return isCredentialsNonExpired;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return isEnabled;
     }
 }

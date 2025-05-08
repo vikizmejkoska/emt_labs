@@ -1,8 +1,9 @@
 package mk.ukim.finki.emtlab.service.application.impl;
 
-import mk.ukim.finki.emtlab.model.domain.User;
+import mk.ukim.finki.emtlab.config.security.JwtHelper;
 import mk.ukim.finki.emtlab.dto.CreateUserDto;
 import mk.ukim.finki.emtlab.dto.DisplayUserDto;
+import mk.ukim.finki.emtlab.dto.LoginResponseDto;
 import mk.ukim.finki.emtlab.dto.LoginUserDto;
 import mk.ukim.finki.emtlab.service.application.UserApplicationService;
 import mk.ukim.finki.emtlab.service.domain.UserService;
@@ -13,35 +14,32 @@ import java.util.Optional;
 @Service
 public class UserApplicationServiceImpl implements UserApplicationService {
 
-    private final UserService userService;
+    private final UserService userDomainService;
+    private final JwtHelper jwtHelper;
 
-    public UserApplicationServiceImpl(UserService userService) {
-        this.userService = userService;
+    public UserApplicationServiceImpl(UserService userDomainService, JwtHelper jwtHelper) {
+        this.userDomainService = userDomainService;
+        this.jwtHelper = jwtHelper;
     }
 
     @Override
-    public Optional<DisplayUserDto> register(CreateUserDto createUserDto) {
-        User user = userService.register(
+    public Optional<DisplayUserDto> save(CreateUserDto createUserDto) {
+        return userDomainService.save(
                 createUserDto.username(),
                 createUserDto.password(),
                 createUserDto.repeatPassword(),
                 createUserDto.name(),
                 createUserDto.surname(),
                 createUserDto.role()
-        );
-        return Optional.of(DisplayUserDto.from(user));
+        ).map(DisplayUserDto::from);
     }
 
     @Override
-    public Optional<DisplayUserDto> login(LoginUserDto loginUserDto) {
-        return Optional.of(DisplayUserDto.from(userService.login(
-                loginUserDto.username(),
-                loginUserDto.password()
-        )));
-    }
-
-    @Override
-    public Optional<DisplayUserDto> findByUsername(String username) {
-        return Optional.of(DisplayUserDto.from(userService.findByUsername(username)));
+    public Optional<LoginResponseDto> login(LoginUserDto userLoginDto) {
+        String token = jwtHelper.generateToken(userDomainService.login(
+                userLoginDto.username(),
+                userLoginDto.password()
+        ));
+        return Optional.of(new LoginResponseDto(token));
     }
 }

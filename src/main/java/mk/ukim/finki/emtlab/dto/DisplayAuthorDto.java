@@ -27,7 +27,5 @@ public record DisplayAuthorDto(Long Id,
         return authors.stream().map(DisplayAuthorDto::from).collect(Collectors.toList());
     }
 
-    public Author toAuthor(Country country) {
-        return new Author(name, surname,country);
-    }
+
 }

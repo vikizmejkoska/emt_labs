@@ -2,6 +2,7 @@ package mk.ukim.finki.emtlab.web;
 
 import mk.ukim.finki.emtlab.dto.CreateBookDto;
 import mk.ukim.finki.emtlab.dto.DisplayBookDto;
+import mk.ukim.finki.emtlab.model.views.BooksPerAuthorView;
 import mk.ukim.finki.emtlab.service.application.BookApplicationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -63,6 +64,11 @@ public class BookController {
     @Operation(summary = "Get latest books", description = "Retrieve the 10 most recently published books")
     public List<DisplayBookDto> findLatestBooks() {
         return bookService.findLatestBooks();
+    }
+
+    @GetMapping("/by-author")
+    public ResponseEntity<List<BooksPerAuthorView>> findBooksPerAuthor() {
+        return ResponseEntity.ok(bookService.findBooksPerAuthor());
     }
 
 //    @PostMapping("/markAsRented/{id}")
